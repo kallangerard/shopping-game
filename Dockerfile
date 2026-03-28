@@ -4,7 +4,7 @@
 # ---------------------------------------------------------------------------- #
 FROM ghcr.io/astral-sh/uv:0.11.2 AS uv
 
-FROM python:3.12-slim AS builder
+FROM python:3.14-slim@sha256:fb83750094b46fd6b8adaa80f66e2302ecbe45d513f6cece637a841e1025b4ca AS builder
 
 # Copy the uv binary from the official uv image
 COPY --from=uv /uv /uvx /usr/local/bin/
@@ -18,7 +18,7 @@ RUN uv sync --frozen --no-install-project --no-dev
 # ---------------------------------------------------------------------------- #
 # Runtime stage – lean final image
 # ---------------------------------------------------------------------------- #
-FROM python:3.12-slim AS runtime
+FROM python:3.14-slim@sha256:fb83750094b46fd6b8adaa80f66e2302ecbe45d513f6cece637a841e1025b4ca AS runtime
 
 # Create a non-root user for security
 RUN useradd --create-home appuser
