@@ -11,6 +11,7 @@ spec:
   template:
     metadata:
       labels:
+        app: shopping-game
         stateful-set-selector: shopping-game
     spec:
       securityContext:
