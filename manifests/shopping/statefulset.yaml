@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: shopping-game
 spec:
@@ -7,6 +7,7 @@ spec:
   selector:
     matchLabels:
       app: shopping-game
+  serviceName: shopping-game
   template:
     metadata:
       labels:
@@ -57,7 +58,13 @@ spec:
           #     port: 8000
           #   initialDelaySeconds: 15
           #   periodSeconds: 30
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: shopping-game-data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: block-nvme
+        resources:
+          requests:
+            storage: 1Gi
