@@ -1,0 +1,20 @@
+[
+  {"model": "store.item", "pk": 1, "fields": {"name": "Apple",        "price": "0.50", "thumbnail_type": "emoji", "emoji": "🍎", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 2, "fields": {"name": "Banana",       "price": "0.30", "thumbnail_type": "emoji", "emoji": "🍌", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 3, "fields": {"name": "Milk",         "price": "2.50", "thumbnail_type": "emoji", "emoji": "🥛", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 4, "fields": {"name": "Bread",        "price": "3.00", "thumbnail_type": "emoji", "emoji": "🍞", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 5, "fields": {"name": "Eggs",         "price": "4.50", "thumbnail_type": "emoji", "emoji": "🥚", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 6, "fields": {"name": "Cheese",       "price": "5.00", "thumbnail_type": "emoji", "emoji": "🧀", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 7, "fields": {"name": "Orange Juice", "price": "3.50", "thumbnail_type": "emoji", "emoji": "🍊", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 8, "fields": {"name": "Butter",       "price": "4.00", "thumbnail_type": "emoji", "emoji": "🧈", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 9, "fields": {"name": "Chicken",      "price": "8.00", "thumbnail_type": "emoji", "emoji": "🍗", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 10, "fields": {"name": "Carrot",      "price": "1.20", "thumbnail_type": "emoji", "emoji": "🥕", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 11, "fields": {"name": "Broccoli",    "price": "2.00", "thumbnail_type": "emoji", "emoji": "🥦", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 12, "fields": {"name": "Tomato",      "price": "0.80", "thumbnail_type": "emoji", "emoji": "🍅", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 13, "fields": {"name": "Potato",      "price": "1.50", "thumbnail_type": "emoji", "emoji": "🥔", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 14, "fields": {"name": "Strawberry",  "price": "4.00", "thumbnail_type": "emoji", "emoji": "🍓", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 15, "fields": {"name": "Watermelon",  "price": "6.00", "thumbnail_type": "emoji", "emoji": "🍉", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 16, "fields": {"name": "Pizza",       "price": "9.50", "thumbnail_type": "emoji", "emoji": "🍕", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 17, "fields": {"name": "Ice Cream",   "price": "3.50", "thumbnail_type": "emoji", "emoji": "🍦", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}},
+  {"model": "store.item", "pk": 18, "fields": {"name": "Chocolate",   "price": "2.50", "thumbnail_type": "emoji", "emoji": "🍫", "image": "", "is_available": true, "created_at": "2024-01-01T00:00:00Z"}}
+]

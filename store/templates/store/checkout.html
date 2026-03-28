@@ -1,0 +1,197 @@
+{% extends "store/base.html" %}
+{% block title %}Checkout – Supermarket{% endblock %}
+
+{% block extra_style %}
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 24px;
+  align-items: start;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+@media (max-width: 800px) {
+  .checkout-layout { grid-template-columns: 1fr; }
+}
+
+.receipt-list { list-style: none; }
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eeeeee;
+  font-size: 1.05rem;
+}
+.receipt-row:last-child { border-bottom: none; }
+.receipt-qty { color: var(--muted); margin-left: 6px; }
+.receipt-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 16px 0 0;
+  border-top: 2px solid #e0e0e0;
+  margin-top: 8px;
+}
+.total-amount { color: var(--green); }
+
+/* Payment panel */
+.payment-panel h2 { font-size: 1.3rem; margin-bottom: 20px; }
+
+.money-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.money-btn {
+  background: var(--card-bg);
+  border: 2px solid var(--green);
+  color: var(--green);
+  border-radius: var(--radius);
+  padding: 18px 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  text-align: center;
+}
+.money-btn:hover { background: var(--green); color: white; }
+.money-btn.active { background: var(--green); color: white; }
+
+.amount-display {
+  background: #e8f5e9;
+  border: 2px solid var(--green);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.amount-display label { display: block; font-size: 0.9rem; color: var(--muted); margin-bottom: 8px; }
+.amount-display .amount-val {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--green);
+}
+input[type="hidden"]#amount_given {}
+
+.divider { height: 1px; background: #e0e0e0; margin: 20px 0; }
+
+.back-link {
+  display: inline-block;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  margin-top: 12px;
+}
+.back-link:hover { color: var(--text); }
+{% endblock %}
+
+{% block content %}
+<div class="checkout-layout">
+
+  <!-- Receipt -->
+  <div class="card">
+    <h2 style="font-size:1.3rem;margin-bottom:16px">🧾 Your Items</h2>
+    <ul class="receipt-list">
+      {% for entry in cart_items %}
+      <li class="receipt-row">
+        <span>
+          {% if entry.item.thumbnail_type == 'emoji' %}{{ entry.item.emoji }} {% endif %}{{ entry.item.name }}
+          <span class="receipt-qty">× {{ entry.qty }}</span>
+        </span>
+        <strong>${{ entry.subtotal }}</strong>
+      </li>
+      {% endfor %}
+    </ul>
+    <div class="receipt-total-row">
+      <span>Total</span>
+      <span class="total-amount">${{ total }}</span>
+    </div>
+  </div>
+
+  <!-- Payment -->
+  <div class="card payment-panel">
+    <h2>💵 Pay</h2>
+
+    {% if error %}
+    <div class="alert alert-error">{{ error }}</div>
+    {% endif %}
+
+    <p style="color:var(--muted);margin-bottom:16px;font-size:0.95rem">Tap a note to select the amount, then press Pay!</p>
+
+    <div class="amount-display">
+      <label>Amount Given</label>
+      <div class="amount-val" id="amountDisplay">$0.00</div>
+    </div>
+
+    <div class="money-grid">
+      {% for amount in denominations %}
+      <button type="button" class="money-btn" onclick="selectAmount({{ amount }})">
+        ${{ amount }}
+      </button>
+      {% endfor %}
+      <button type="button" class="money-btn" onclick="clearAmount()" style="border-color:var(--red);color:var(--red)">
+        ✕ Clear
+      </button>
+    </div>
+
+    <form method="post" id="payForm">
+      {% csrf_token %}
+      <input type="hidden" name="amount_given" id="amount_given" value="0">
+      <button type="submit" class="btn btn-green btn-lg" style="width:100%" id="payBtn" disabled>
+        ✅ Pay $0.00
+      </button>
+    </form>
+
+    <div class="divider"></div>
+    <a href="{% url 'pos' %}" class="back-link">← Back to shop</a>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+const TOTAL = parseFloat('{{ total }}');
+let selected = 0;
+
+const notes = [5, 10, 20, 50, 100];
+
+function selectAmount(amount) {
+  selected = amount;
+  document.getElementById('amountDisplay').textContent = '$' + selected.toFixed(2);
+  document.getElementById('amount_given').value = selected;
+
+  // highlight active
+  document.querySelectorAll('.money-btn').forEach(btn => btn.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  updatePayBtn();
+}
+
+function clearAmount() {
+  selected = 0;
+  document.getElementById('amountDisplay').textContent = '$0.00';
+  document.getElementById('amount_given').value = 0;
+  document.querySelectorAll('.money-btn').forEach(btn => btn.classList.remove('active'));
+  updatePayBtn();
+}
+
+function updatePayBtn() {
+  const btn = document.getElementById('payBtn');
+  if (selected >= TOTAL && selected > 0) {
+    btn.disabled = false;
+    btn.textContent = '✅ Pay $' + selected.toFixed(2);
+    btn.style.opacity = '1';
+  } else {
+    btn.disabled = true;
+    btn.textContent = selected > 0
+      ? `⚠️ Need $${TOTAL.toFixed(2)} (short $${(TOTAL - selected).toFixed(2)})`
+      : '✅ Pay $0.00';
+    btn.style.opacity = '0.5';
+  }
+}
+</script>
+{% endblock %}
