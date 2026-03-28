@@ -1,16 +1,18 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: shopping-game
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: shopping-game
+      stateful-set-selector: shopping-game
+  serviceName: shopping-game
   template:
     metadata:
       labels:
         app: shopping-game
+        stateful-set-selector: shopping-game
     spec:
       securityContext:
         fsGroup: 1000
@@ -32,7 +34,7 @@ spec:
       #         mountPath: /data
       containers:
         - name: shopping-game
-          image: ghcr.io/kallangerard/shopping-game:main
+          image: ghcr.io/kallangerard/shopping-game
           ports:
             - containerPort: 8000
           env:
@@ -57,7 +59,13 @@ spec:
           #     port: 8000
           #   initialDelaySeconds: 15
           #   periodSeconds: 30
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: shopping-game-data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: block-nvme
+        resources:
+          requests:
+            storage: 1Gi

@@ -4,7 +4,10 @@ kind: Kustomization
 namespace: gaming
 
 resources:
-  - pvc.yaml
-  - deployment.yaml
+  - statefulset.yaml
   - service.yaml
   - httproute.yaml
+
+images:
+  - name: ghcr.io/kallangerard/shopping-game
+    newTag: main
