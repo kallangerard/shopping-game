@@ -1,0 +1,34 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shopping-game
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - shopping.operationloungechair.com
+      secretName: shopping-game-tls
+  rules:
+    - host: shopping.operationloungechair.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shopping-game
+                port:
+                  name: http
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: shopping-game-tls
+spec:
+  secretName: shopping-game-tls
+  dnsNames:
+    - "shopping.operationloungechair.com"
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-production
