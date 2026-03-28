@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopping-game
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shopping-game
+  template:
+    metadata:
+      labels:
+        app: shopping-game
+    spec:
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+        - name: migrate
+          image: ghcr.io/kallangerard/shopping-game:main
+          command:
+            - python
+            - manage.py
+            - migrate
+            - --noinput
+          env:
+            - name: DEBUG
+              value: "False"
+            - name: DATABASE_PATH
+              value: /data/db.sqlite3
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      containers:
+        - name: shopping-game
+          image: ghcr.io/kallangerard/shopping-game:main
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DEBUG
+              value: "False"
+            - name: ALLOWED_HOSTS
+              value: "shopping.operationloungechair.com"
+            - name: DATABASE_PATH
+              value: /data/db.sqlite3
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 30
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: shopping-game-data
