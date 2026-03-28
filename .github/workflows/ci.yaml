@@ -4,7 +4,7 @@ on:
   push:
     paths-ignore:
       - manifests/**
-      - *.md
+      - "*.md"
 
 jobs:
   test:
