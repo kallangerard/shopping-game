@@ -66,6 +66,11 @@ flake.nix
 
 Cart is session-based (not persisted to DB). Transactions are written to SQLite on successful checkout.
 
+## Workflow Files
+
+- All GitHub Actions workflow files must use the `.yaml` extension (not `.yml`)
+- Glob patterns in `paths-ignore` (e.g. `*.md`) must be quoted to avoid YAML alias parsing errors
+
 ## CI
 
 GitHub Actions runs tests via Nix:

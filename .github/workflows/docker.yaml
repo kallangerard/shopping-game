@@ -6,7 +6,7 @@ on:
       - main
     paths-ignore:
       - manifests/**
-      - *.md
+      - "*.md"
     tags:
       - "v*.*.*"
 
