@@ -1,0 +1,331 @@
+{% extends "store/base.html" %}
+{% block title %}Shop – Supermarket Checkout{% endblock %}
+
+{% block extra_style %}
+.pos-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .pos-layout { grid-template-columns: 1fr; }
+}
+
+/* Item grid */
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+}
+
+.item-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: border-color 0.15s, transform 0.1s, box-shadow 0.15s;
+  user-select: none;
+}
+.item-card:active { transform: scale(0.95); }
+.item-card:hover { border-color: var(--green); box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
+
+.item-thumb {
+  font-size: 3.5rem;
+  line-height: 1;
+  margin-bottom: 10px;
+  display: block;
+}
+.item-thumb img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.item-name {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+.item-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--green);
+}
+.item-badge {
+  display: inline-block;
+  background: var(--yellow);
+  color: #333;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  margin-top: 6px;
+}
+
+/* Cart panel */
+.cart-panel {
+  position: sticky;
+  top: 24px;
+}
+.cart-panel h2 {
+  font-size: 1.3rem;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cart-empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 32px 0;
+  font-size: 1rem;
+}
+.cart-list { list-style: none; margin-bottom: 16px; }
+.cart-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eeeeee;
+  gap: 8px;
+}
+.cart-row:last-child { border-bottom: none; }
+.cart-row-info { flex: 1; min-width: 0; }
+.cart-row-name { font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cart-row-price { color: var(--muted); font-size: 0.85rem; }
+.cart-row-qty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.qty-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--muted);
+  background: transparent;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s;
+}
+.qty-btn:hover { background: #eeeeee; }
+.qty-num { min-width: 24px; text-align: center; font-weight: 700; font-size: 1rem; }
+.cart-subtotal { color: var(--green); font-weight: 700; font-size: 0.95rem; white-space: nowrap; }
+
+.cart-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding: 14px 0 20px;
+  border-top: 2px solid #e0e0e0;
+}
+.total-amount { color: var(--green); }
+
+.cart-actions { display: flex; flex-direction: column; gap: 10px; }
+
+.no-items-msg {
+  text-align: center;
+  padding: 60px 24px;
+  color: var(--muted);
+  font-size: 1.2rem;
+}
+{% endblock %}
+
+{% block content %}
+{% if items %}
+<div class="pos-layout">
+
+  <!-- Item grid -->
+  <section>
+    <div class="item-grid" id="itemGrid">
+      {% for item in items %}
+      <div class="item-card" id="card-{{ item.pk }}" data-id="{{ item.pk }}" onclick="addItem({{ item.pk }})">
+        <span class="item-thumb">
+          {% if item.thumbnail_type == 'image' and item.image %}
+            <img src="{{ item.image.url }}" alt="{{ item.name }}">
+          {% else %}
+            {{ item.emoji }}
+          {% endif %}
+        </span>
+        <div class="item-name">{{ item.name }}</div>
+        <div class="item-price">${{ item.price }}</div>
+        <span class="item-badge" id="badge-{{ item.pk }}" style="display:none">0</span>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Cart panel -->
+  <aside class="cart-panel card">
+    <h2>🧺 Cart <span id="cartCountBadge" style="background:var(--green);color:white;border-radius:50%;padding:2px 10px;font-size:0.9rem;">{{ cart_items|length }}</span></h2>
+
+    <div id="cartEmpty" class="cart-empty" {% if cart_items %}style="display:none"{% endif %}>
+      Tap an item to add it!
+    </div>
+
+    <ul class="cart-list" id="cartList">
+      {% for entry in cart_items %}
+      <li class="cart-row" id="row-{{ entry.item.pk }}">
+        <div class="cart-row-info">
+          <div class="cart-row-name">
+            {% if entry.item.thumbnail_type == 'emoji' %}{{ entry.item.emoji }} {% endif %}{{ entry.item.name }}
+          </div>
+          <div class="cart-row-price">${{ entry.item.price }} each</div>
+        </div>
+        <div class="cart-row-qty">
+          <button class="qty-btn" onclick="removeItem({{ entry.item.pk }})">−</button>
+          <span class="qty-num" id="qty-{{ entry.item.pk }}">{{ entry.qty }}</span>
+          <button class="qty-btn" onclick="addItem({{ entry.item.pk }})">+</button>
+        </div>
+        <span class="cart-subtotal" id="sub-{{ entry.item.pk }}">${{ entry.subtotal }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <div class="cart-total-row">
+      <span>Total</span>
+      <span class="total-amount" id="cartTotal">${{ total }}</span>
+    </div>
+
+    <div class="cart-actions">
+      <a href="{% url 'checkout' %}" class="btn btn-green btn-lg" id="checkoutBtn" {% if not cart_items %}style="opacity:0.4;pointer-events:none"{% endif %}>
+        💳 Checkout
+      </a>
+      <form method="post" action="{% url 'clear_cart' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline btn-sm" style="width:100%" onclick="return confirm('Clear the cart?')">
+          🗑 Clear cart
+        </button>
+      </form>
+    </div>
+  </aside>
+
+</div>
+{% else %}
+<div class="no-items-msg">
+  <p style="font-size:3rem">🛍️</p>
+  <p>No items yet! Ask a grown-up to add some in the <a href="/admin/">admin panel</a>.</p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_script %}
+<script>
+const CSRF = '{{ csrf_token }}';
+const itemPrices = {
+  {% for item in items %}'{{ item.pk }}': '{{ item.price }}',{% endfor %}
+};
+
+function fmt(val) {
+  return '$' + parseFloat(val).toFixed(2);
+}
+
+function addItem(id) {
+  fetch(`/cart/add/${id}/`, {method:'POST', headers:{'X-CSRFToken':CSRF}})
+    .then(r => r.json()).then(data => updateCart(id, data, true));
+}
+
+function removeItem(id) {
+  fetch(`/cart/remove/${id}/`, {method:'POST', headers:{'X-CSRFToken':CSRF}})
+    .then(r => r.json()).then(data => updateCart(id, data, false));
+}
+
+function updateCart(id, data, added) {
+  const key = String(id);
+  const qty = data.item_qty;
+  const total = data.total;
+  const cartCount = data.cart_count;
+
+  // update badge on item card
+  const badge = document.getElementById('badge-' + key);
+  if (badge) {
+    if (qty > 0) {
+      badge.textContent = qty;
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  // update cart total
+  document.getElementById('cartTotal').textContent = fmt(total);
+
+  // update cart count badge
+  const ccb = document.getElementById('cartCountBadge');
+  if (ccb) ccb.textContent = cartCount;
+
+  // update/remove row
+  let row = document.getElementById('row-' + key);
+  if (qty > 0) {
+    if (!row) {
+      // create new row
+      const ul = document.getElementById('cartList');
+      const li = document.createElement('li');
+      li.className = 'cart-row';
+      li.id = 'row-' + key;
+      // find item name from DOM
+      const card = document.getElementById('card-' + key);
+      const name = card ? card.querySelector('.item-name').textContent.trim() : 'Item';
+      const price = itemPrices[key] || '0';
+      li.innerHTML = `
+        <div class="cart-row-info">
+          <div class="cart-row-name">${name}</div>
+          <div class="cart-row-price">$${parseFloat(price).toFixed(2)} each</div>
+        </div>
+        <div class="cart-row-qty">
+          <button class="qty-btn" onclick="removeItem(${key})">−</button>
+          <span class="qty-num" id="qty-${key}">${qty}</span>
+          <button class="qty-btn" onclick="addItem(${key})">+</button>
+        </div>
+        <span class="cart-subtotal" id="sub-${key}">${fmt(parseFloat(price)*qty)}</span>
+      `;
+      ul.appendChild(li);
+      row = li;
+    } else {
+      const qtyEl = document.getElementById('qty-' + key);
+      if (qtyEl) qtyEl.textContent = qty;
+      const subEl = document.getElementById('sub-' + key);
+      if (subEl) {
+        const price = itemPrices[key] || '0';
+        subEl.textContent = fmt(parseFloat(price) * qty);
+      }
+    }
+  } else if (row) {
+    row.remove();
+  }
+
+  // toggle empty state
+  const cartList = document.getElementById('cartList');
+  const cartEmpty = document.getElementById('cartEmpty');
+  const checkoutBtn = document.getElementById('checkoutBtn');
+  const hasItems = cartList && cartList.children.length > 0;
+  if (cartEmpty) cartEmpty.style.display = hasItems ? 'none' : 'block';
+  if (checkoutBtn) {
+    checkoutBtn.style.opacity = hasItems ? '1' : '0.4';
+    checkoutBtn.style.pointerEvents = hasItems ? 'auto' : 'none';
+  }
+}
+
+// Re-apply badges for any pre-existing cart items on page load
+document.addEventListener('DOMContentLoaded', () => {
+  {% for entry in cart_items %}
+  const b{{ entry.item.pk }} = document.getElementById('badge-{{ entry.item.pk }}');
+  if (b{{ entry.item.pk }}) {
+    b{{ entry.item.pk }}.textContent = '{{ entry.qty }}';
+    b{{ entry.item.pk }}.style.display = 'inline-block';
+  }
+  {% endfor %}
+});
+</script>
+{% endblock %}

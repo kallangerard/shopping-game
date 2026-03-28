@@ -1,0 +1,38 @@
+# Git
+.git
+.gitignore
+
+# Python caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Development / test artifacts
+.coverage
+.pytest_cache/
+htmlcov/
+*.egg-info/
+
+# Local DB (runtime creates its own)
+db.sqlite3
+
+# Media uploads (mounted as a volume in production)
+media/
+
+# Static files (collected at container start)
+staticfiles/
+
+# IDE / OS files
+.DS_Store
+.idea/
+.vscode/
+
+# Docs
+README.md

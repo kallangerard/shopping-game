@@ -1,0 +1,115 @@
+{% extends "store/base.html" %}
+{% block title %}Change – Supermarket{% endblock %}
+
+{% block extra_style %}
+.change-page {
+  max-width: 600px;
+  margin: 40px auto;
+  text-align: center;
+}
+.change-hero {
+  font-size: 5rem;
+  margin-bottom: 16px;
+  animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes pop {
+  from { transform: scale(0.4); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.change-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--green);
+}
+.change-amount {
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--green);
+  margin: 16px 0;
+}
+.change-zero {
+  color: var(--muted);
+  font-size: 1.2rem;
+}
+
+.summary-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin: 24px 0;
+  text-align: left;
+}
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 1.05rem;
+  border-bottom: 1px solid #eeeeee;
+}
+.summary-row:last-child { border-bottom: none; }
+.summary-label { color: var(--muted); }
+.summary-value { font-weight: 700; }
+
+.item-list { list-style: none; margin-bottom: 16px; }
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #eeeeee;
+}
+.item-row:last-child { border-bottom: none; }
+
+.new-game-btn {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+}
+{% endblock %}
+
+{% block content %}
+<div class="change-page">
+  {% if transaction.change > 0 %}
+  <div class="change-hero">🎉</div>
+  <div class="change-title">Here's your change!</div>
+  <div class="change-amount">${{ transaction.change }}</div>
+  {% else %}
+  <div class="change-hero">✅</div>
+  <div class="change-title">Exact change – perfect!</div>
+  <div class="change-zero change-amount">No change needed</div>
+  {% endif %}
+
+  <div class="summary-card">
+    <h3 style="margin-bottom:12px;font-size:1.1rem">🧾 Receipt</h3>
+    <ul class="item-list">
+      {% for ti in transaction.items.all %}
+      <li class="item-row">
+        <span>
+          {% if ti.item.thumbnail_type == 'emoji' %}{{ ti.item.emoji }} {% endif %}{{ ti.item.name }}
+          × {{ ti.quantity }}
+        </span>
+        <strong>${{ ti.subtotal }}</strong>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <div class="summary-row">
+      <span class="summary-label">Total</span>
+      <span class="summary-value">${{ transaction.total }}</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-label">Amount given</span>
+      <span class="summary-value">${{ transaction.amount_given }}</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-label">Change</span>
+      <span class="summary-value" style="color:var(--green)">${{ transaction.change }}</span>
+    </div>
+  </div>
+
+  <a href="{% url 'pos' %}" class="btn btn-green btn-lg new-game-btn">
+    🛒 New Shopping Trip
+  </a>
+</div>
+{% endblock %}

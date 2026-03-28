@@ -151,6 +151,7 @@ def checkout(request):
         'cart_items': cart_items,
         'total': total,
         'error': error,
+        'denominations': [5, 10, 20, 50, 100],
     })
 
 
