@@ -33,7 +33,7 @@ spec:
       #         mountPath: /data
       containers:
         - name: shopping-game
-          image: ghcr.io/kallangerard/shopping-game:main
+          image: ghcr.io/kallangerard/shopping-game
           ports:
             - containerPort: 8000
           env:
