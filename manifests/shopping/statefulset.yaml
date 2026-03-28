@@ -6,12 +6,12 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: shopping-game
+      stateful-set-selector: shopping-game
   serviceName: shopping-game
   template:
     metadata:
       labels:
-        app: shopping-game
+        stateful-set-selector: shopping-game
     spec:
       securityContext:
         fsGroup: 1000
