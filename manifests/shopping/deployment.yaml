@@ -14,22 +14,22 @@ spec:
     spec:
       securityContext:
         fsGroup: 1000
-      initContainers:
-        - name: migrate
-          image: ghcr.io/kallangerard/shopping-game:main
-          command:
-            - python
-            - manage.py
-            - migrate
-            - --noinput
-          env:
-            - name: DEBUG
-              value: "False"
-            - name: DATABASE_PATH
-              value: /data/db.sqlite3
-          volumeMounts:
-            - name: data
-              mountPath: /data
+      # initContainers:
+      #   - name: migrate
+      #     image: ghcr.io/kallangerard/shopping-game:main
+      #     command:
+      #       - python
+      #       - manage.py
+      #       - migrate
+      #       - --noinput
+      #     env:
+      #       - name: DEBUG
+      #         value: "False"
+      #       - name: DATABASE_PATH
+      #         value: /data/db.sqlite3
+      #     volumeMounts:
+      #       - name: data
+      #         mountPath: /data
       containers:
         - name: shopping-game
           image: ghcr.io/kallangerard/shopping-game:main
@@ -45,18 +45,18 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 8000
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 8000
-            initialDelaySeconds: 15
-            periodSeconds: 30
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 8000
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 8000
+          #   initialDelaySeconds: 15
+          #   periodSeconds: 30
       volumes:
         - name: data
           persistentVolumeClaim:
