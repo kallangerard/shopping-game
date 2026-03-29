@@ -166,7 +166,7 @@ class CheckoutViewTest(TestCase):
         self.client.post(reverse('checkout'), {'amount_given': '10.00'})
         tx = Transaction.objects.last()
         session = self.client.session
-        self.assertEqual(session.get('last_transaction'), tx.pk)
+        self.assertIn(tx.pk, session.get('completed_transactions', []))
 
 
 class ChangeViewTest(TestCase):
@@ -187,9 +187,9 @@ class ChangeViewTest(TestCase):
         )
 
     def _set_last_transaction(self, pk):
-        """Helper to seed the session with a completed transaction PK."""
+        """Helper to seed the session as if a checkout completed for the given PK."""
         session = self.client.session
-        session['last_transaction'] = pk
+        session['completed_transactions'] = [pk]
         session.save()
 
     def test_change_page_loads(self):
@@ -203,13 +203,14 @@ class ChangeViewTest(TestCase):
         response = self.client.get(reverse('change', args=[self.tx.pk]))
         self.assertContains(response, 'Eggs')
 
-    def test_change_invalid_pk_redirects(self):
+    def test_change_authorized_missing_pk_redirects(self):
+        """Session has authorization for PK 9999 but the transaction doesn't exist in DB."""
         self._set_last_transaction(9999)
         response = self.client.get(reverse('change', args=[9999]))
         self.assertRedirects(response, reverse('pos'))
 
     def test_change_page_unauthorized_redirects(self):
         """Accessing another session's transaction (IDOR) is blocked."""
-        # No last_transaction in session — should redirect to pos
+        # No completed_transactions in session — should redirect to pos
         response = self.client.get(reverse('change', args=[self.tx.pk]))
         self.assertRedirects(response, reverse('pos'))

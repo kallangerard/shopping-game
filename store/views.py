@@ -139,9 +139,11 @@ def checkout(request):
                     except Item.DoesNotExist:
                         pass
 
-                # Clear the cart
+                # Clear the cart and record this transaction as accessible in this session
                 request.session['cart'] = {}
-                request.session['last_transaction'] = transaction.pk
+                completed = request.session.get('completed_transactions', [])
+                completed.append(transaction.pk)
+                request.session['completed_transactions'] = completed
                 request.session.modified = True
 
                 return redirect('change', pk=transaction.pk)
@@ -157,7 +159,7 @@ def checkout(request):
 
 def change(request, pk):
     """Show the change due to the customer."""
-    if pk != request.session.get('last_transaction'):
+    if pk not in request.session.get('completed_transactions', []):
         return redirect('pos')
     try:
         transaction = Transaction.objects.prefetch_related('items__item').get(pk=pk)
