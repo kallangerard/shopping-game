@@ -85,6 +85,7 @@ nix develop --command sh -c "uv sync --frozen --no-dev && uv run python manage.p
 |---|---|---|
 | `DEBUG` | `True` | Django debug mode |
 | `ALLOWED_HOSTS` | `*` | Comma-separated allowed hosts |
+| `CSRF_TRUSTED_ORIGINS` | `` | Comma-separated trusted origins (e.g. `http://localhost:8080`). Required in Docker when using a non-standard port. |
 
 ## Adding Dependencies
 

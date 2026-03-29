@@ -31,6 +31,11 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
+# Required in Django 4.0+ for CSRF Origin checks on non-standard ports (e.g. Docker).
+# Set to a comma-separated list of origins, e.g. "http://localhost:8080"
+_csrf_trusted = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_trusted.split(',') if o.strip()]
+
 
 # Application definition
 

@@ -42,6 +42,8 @@ spec:
               value: "False"
             - name: ALLOWED_HOSTS
               value: "shopping.operationloungechair.com"
+            - name: CSRF_TRUSTED_ORIGINS
+              value: "https://shopping.operationloungechair.com"
             - name: DATABASE_PATH
               value: /data/db.sqlite3
           volumeMounts:
