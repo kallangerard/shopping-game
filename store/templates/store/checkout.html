@@ -39,44 +39,65 @@
 /* Payment panel */
 .payment-panel h2 { font-size: 1.3rem; margin-bottom: 20px; }
 
-.money-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 20px;
-}
-.money-btn {
-  background: var(--card-bg);
-  border: 2px solid var(--green);
-  color: var(--green);
-  border-radius: var(--radius);
-  padding: 18px 8px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.12s, color 0.12s;
-  text-align: center;
-}
-.money-btn:hover { background: var(--green); color: white; }
-.money-btn.active { background: var(--green); color: white; }
-
 .amount-display {
   background: #e8f5e9;
   border: 2px solid var(--green);
   border-radius: var(--radius);
-  padding: 20px;
-  text-align: center;
-  margin-bottom: 20px;
+  padding: 16px 20px;
+  text-align: right;
+  margin-bottom: 16px;
 }
-.amount-display label { display: block; font-size: 0.9rem; color: var(--muted); margin-bottom: 8px; }
+.amount-display label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 4px; text-align: left; }
 .amount-display .amount-val {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   font-weight: 700;
   color: var(--green);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
 }
-input[type="hidden"]#amount_given {}
 
-.divider { height: 1px; background: #e0e0e0; margin: 20px 0; }
+/* Keypad */
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.key {
+  background: var(--card-bg);
+  border: 2px solid #d0d0d0;
+  border-radius: var(--radius);
+  padding: 0;
+  height: 64px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s, transform 0.08s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.key:hover { background: #f0f0f0; border-color: #aaa; }
+.key:active { transform: scale(0.94); background: #e0e0e0; }
+.key-zero { font-size: 1.2rem; }
+.key-action {
+  border-color: #bbb;
+  background: #f5f5f5;
+  color: #555;
+  font-size: 1.1rem;
+}
+.key-action:hover { background: #e8e8e8; border-color: #999; }
+.key-clear {
+  border-color: var(--red);
+  color: var(--red);
+  background: #fff5f5;
+  font-size: 1rem;
+}
+.key-clear:hover { background: var(--red); color: white; border-color: var(--red); }
+
+.divider { height: 1px; background: #e0e0e0; margin: 16px 0; }
 
 .back-link {
   display: inline-block;
@@ -119,22 +140,32 @@ input[type="hidden"]#amount_given {}
     <div class="alert alert-error">{{ error }}</div>
     {% endif %}
 
-    <p style="color:var(--muted);margin-bottom:16px;font-size:0.95rem">Tap a note to select the amount, then press Pay!</p>
-
     <div class="amount-display">
       <label>Amount Given</label>
-      <div class="amount-val" id="amountDisplay">$0.00</div>
+      <div class="amount-val" id="amountDisplay">$0<span id="centsDisplay" style="font-size:1.8rem;opacity:0.7">.00</span></div>
     </div>
 
-    <div class="money-grid">
-      {% for amount in denominations %}
-      <button type="button" class="money-btn" onclick="selectAmount({{ amount }})">
-        ${{ amount }}
-      </button>
-      {% endfor %}
-      <button type="button" class="money-btn" onclick="clearAmount()" style="border-color:var(--red);color:var(--red)">
-        ✕ Clear
-      </button>
+    <div class="keypad">
+      <button type="button" class="key" onclick="keyPress('7')">7</button>
+      <button type="button" class="key" onclick="keyPress('8')">8</button>
+      <button type="button" class="key" onclick="keyPress('9')">9</button>
+
+      <button type="button" class="key" onclick="keyPress('4')">4</button>
+      <button type="button" class="key" onclick="keyPress('5')">5</button>
+      <button type="button" class="key" onclick="keyPress('6')">6</button>
+
+      <button type="button" class="key" onclick="keyPress('1')">1</button>
+      <button type="button" class="key" onclick="keyPress('2')">2</button>
+      <button type="button" class="key" onclick="keyPress('3')">3</button>
+
+      <button type="button" class="key key-action" onclick="keyPress('.')">.</button>
+      <button type="button" class="key key-zero" onclick="keyPress('0')">0</button>
+      <button type="button" class="key key-zero" onclick="keyPress('00')">00</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+      <button type="button" class="key key-action" onclick="keyBackspace()" style="height:52px;font-size:1.2rem">⌫</button>
+      <button type="button" class="key key-clear" onclick="keyClear()" style="height:52px">Clear</button>
     </div>
 
     <form method="post" id="payForm">
@@ -155,40 +186,63 @@ input[type="hidden"]#amount_given {}
 {% block extra_script %}
 <script>
 const TOTAL = parseFloat('{{ total }}');
-let selected = 0;
 
-const notes = [5, 10, 20, 50, 100];
+// Raw input string: digits and at most one '.'
+let raw = '';
 
-function selectAmount(amount) {
-  selected = amount;
-  document.getElementById('amountDisplay').textContent = '$' + selected.toFixed(2);
-  document.getElementById('amount_given').value = selected;
-
-  // highlight active
-  document.querySelectorAll('.money-btn').forEach(btn => btn.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-
-  updatePayBtn();
+function keyPress(ch) {
+  if (ch === '.') {
+    if (raw.includes('.')) return;          // already have a decimal
+    raw = raw === '' ? '0.' : raw + '.';
+  } else if (ch === '00') {
+    if (raw === '' || raw === '0') return;  // no-op at zero
+    // Don't allow more than 2 decimal places
+    const dotIdx = raw.indexOf('.');
+    if (dotIdx !== -1 && raw.length - dotIdx > 2) return;
+    if (dotIdx !== -1 && raw.length - dotIdx === 2) return; // already 1 decimal digit; adding 00 would exceed 2 dp
+    raw += '00';
+  } else {
+    // single digit
+    const dotIdx = raw.indexOf('.');
+    if (dotIdx !== -1 && raw.length - dotIdx >= 3) return; // already 2 decimal places
+    if (raw === '0' && ch === '0') return;  // no leading zeros
+    if (raw === '0') { raw = ch; }          // replace leading zero
+    else { raw += ch; }
+  }
+  render();
 }
 
-function clearAmount() {
-  selected = 0;
-  document.getElementById('amountDisplay').textContent = '$0.00';
-  document.getElementById('amount_given').value = 0;
-  document.querySelectorAll('.money-btn').forEach(btn => btn.classList.remove('active'));
-  updatePayBtn();
+function keyBackspace() {
+  raw = raw.slice(0, -1);
+  render();
 }
 
-function updatePayBtn() {
+function keyClear() {
+  raw = '';
+  render();
+}
+
+function render() {
+  const val = parseFloat(raw) || 0;
+
+  // Split display into dollars and cents for visual emphasis
+  const dollars = Math.floor(val);
+  const cents = Math.round((val - dollars) * 100);
+  const centsStr = '.' + String(cents).padStart(2, '0');
+
+  document.getElementById('amountDisplay').firstChild.textContent = '$' + dollars.toLocaleString();
+  document.getElementById('centsDisplay').textContent = centsStr;
+  document.getElementById('amount_given').value = val.toFixed(2);
+
   const btn = document.getElementById('payBtn');
-  if (selected >= TOTAL && selected > 0) {
+  if (val >= TOTAL && val > 0) {
     btn.disabled = false;
-    btn.textContent = '✅ Pay $' + selected.toFixed(2);
+    btn.textContent = '✅ Pay $' + val.toFixed(2);
     btn.style.opacity = '1';
   } else {
     btn.disabled = true;
-    btn.textContent = selected > 0
-      ? `⚠️ Need $${TOTAL.toFixed(2)} (short $${(TOTAL - selected).toFixed(2)})`
+    btn.textContent = val > 0
+      ? `⚠️ Need $${TOTAL.toFixed(2)} (short $${(TOTAL - val).toFixed(2)})`
       : '✅ Pay $0.00';
     btn.style.opacity = '0.5';
   }
