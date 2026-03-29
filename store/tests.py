@@ -162,6 +162,12 @@ class CheckoutViewTest(TestCase):
         session = self.client.session
         self.assertEqual(session.get('cart', {}), {})
 
+    def test_session_records_last_transaction_after_payment(self):
+        self.client.post(reverse('checkout'), {'amount_given': '10.00'})
+        tx = Transaction.objects.last()
+        session = self.client.session
+        self.assertEqual(session.get('last_transaction'), tx.pk)
+
 
 class ChangeViewTest(TestCase):
     def setUp(self):
@@ -180,15 +186,30 @@ class ChangeViewTest(TestCase):
             unit_price=Decimal('4.50'),
         )
 
+    def _set_last_transaction(self, pk):
+        """Helper to seed the session with a completed transaction PK."""
+        session = self.client.session
+        session['last_transaction'] = pk
+        session.save()
+
     def test_change_page_loads(self):
+        self._set_last_transaction(self.tx.pk)
         response = self.client.get(reverse('change', args=[self.tx.pk]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, '0.50')
 
     def test_change_page_shows_items(self):
+        self._set_last_transaction(self.tx.pk)
         response = self.client.get(reverse('change', args=[self.tx.pk]))
         self.assertContains(response, 'Eggs')
 
     def test_change_invalid_pk_redirects(self):
+        self._set_last_transaction(9999)
         response = self.client.get(reverse('change', args=[9999]))
+        self.assertRedirects(response, reverse('pos'))
+
+    def test_change_page_unauthorized_redirects(self):
+        """Accessing another session's transaction (IDOR) is blocked."""
+        # No last_transaction in session — should redirect to pos
+        response = self.client.get(reverse('change', args=[self.tx.pk]))
         self.assertRedirects(response, reverse('pos'))

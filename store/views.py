@@ -141,6 +141,7 @@ def checkout(request):
 
                 # Clear the cart
                 request.session['cart'] = {}
+                request.session['last_transaction'] = transaction.pk
                 request.session.modified = True
 
                 return redirect('change', pk=transaction.pk)
@@ -156,6 +157,8 @@ def checkout(request):
 
 def change(request, pk):
     """Show the change due to the customer."""
+    if pk != request.session.get('last_transaction'):
+        return redirect('pos')
     try:
         transaction = Transaction.objects.prefetch_related('items__item').get(pk=pk)
     except Transaction.DoesNotExist:

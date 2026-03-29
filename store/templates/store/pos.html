@@ -231,6 +231,12 @@ function fmt(val) {
   return '$' + parseFloat(val).toFixed(2);
 }
 
+function escHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
 function addItem(id) {
   fetch(`/cart/add/${id}/`, {method:'POST', headers:{'X-CSRFToken':CSRF}})
     .then(r => r.json()).then(data => updateCart(id, data, true));
@@ -280,7 +286,7 @@ function updateCart(id, data, added) {
       const price = itemPrices[key] || '0';
       li.innerHTML = `
         <div class="cart-row-info">
-          <div class="cart-row-name">${name}</div>
+          <div class="cart-row-name">${escHtml(name)}</div>
           <div class="cart-row-price">$${parseFloat(price).toFixed(2)} each</div>
         </div>
         <div class="cart-row-qty">

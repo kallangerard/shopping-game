@@ -36,6 +36,9 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 _csrf_trusted = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_trusted.split(',') if o.strip()]
 
+# Prevent JavaScript from reading the CSRF cookie (mitigates XSS-based token theft).
+CSRF_COOKIE_HTTPONLY = True
+
 
 # Application definition
 
