@@ -26,8 +26,8 @@ SECRET_KEY = os.environ.get(
     'django-insecure-8q1e&%6)8wcld474y*g*o8u(k^e)6hmxt)m6w5^vsa(gh(v2i4',
 )
 
-# SECURITY WARNING: set DEBUG=False in production via the DEBUG environment variable!
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+# SECURITY WARNING: set DEBUG=True via the DEBUG environment variable for local development only!
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
@@ -35,6 +35,9 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 # Set to a comma-separated list of origins, e.g. "http://localhost:8080"
 _csrf_trusted = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_trusted.split(',') if o.strip()]
+
+# Prevent JavaScript from reading the CSRF cookie (mitigates XSS-based token theft).
+CSRF_COOKIE_HTTPONLY = True
 
 
 # Application definition
