@@ -2,8 +2,9 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "packageRules": [
     {
-      "matchFileNames": ["manifests/shopping/**"],
-      "matchManagers": ["kubernetes"],
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/kallangerard/**"],
+      "matchUpdateTypes": ["digest"],
       "enabled": false
     }
   ]
