@@ -2,7 +2,7 @@ import json
 from decimal import Decimal, InvalidOperation
 
 from django.shortcuts import render, redirect
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from django.http import JsonResponse
 
 from .models import Item, Transaction, TransactionItem
@@ -29,6 +29,11 @@ def pos(request):
         'cart_items': cart_items,
         'total': total,
     })
+
+
+@require_GET
+def till(request):
+    return render(request, 'store/till.html')
 
 
 @require_POST
