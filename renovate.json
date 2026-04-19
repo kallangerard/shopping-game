@@ -6,11 +6,6 @@
       "matchPackageNames": ["ghcr.io/kallangerard/**"],
       "matchUpdateTypes": ["digest"],
       "enabled": false
-    },
-    {
-      "matchFileNames": ["manifests/shopping/**"],
-      "matchManagers": ["kubernetes"],
-      "enabled": false
     }
   ]
 }
