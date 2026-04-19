@@ -40,6 +40,7 @@
     }
 
     header h1 { font-size: 1.6rem; font-weight: 700; }
+    header nav { display: flex; gap: 8px; }
     header nav a {
       color: white;
       text-decoration: none;
@@ -103,6 +104,7 @@
     <h1>🛒 Supermarket Checkout</h1>
     <nav>
       <a href="{% url 'pos' %}">🏪 Shop</a>
+      <a href="{% url 'till' %}">💰 Count Till</a>
     </nav>
   </header>
   <main>

@@ -214,3 +214,34 @@ class ChangeViewTest(TestCase):
         # No completed_transactions in session — should redirect to pos
         response = self.client.get(reverse('change', args=[self.tx.pk]))
         self.assertRedirects(response, reverse('pos'))
+
+
+class TillViewTest(TestCase):
+    def test_till_page_loads(self):
+        response = self.client.get(reverse('till'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_till_page_uses_correct_template(self):
+        response = self.client.get(reverse('till'))
+        self.assertTemplateUsed(response, 'store/till.html')
+
+    def test_till_page_contains_denominations(self):
+        response = self.client.get(reverse('till'))
+        for label in ['$100', '$50', '$20', '$10', '$5', '$2', '$1', '50¢', '20¢', '10¢', '5¢']:
+            self.assertContains(response, label)
+
+    def test_till_post_not_allowed(self):
+        response = self.client.post(reverse('till'))
+        self.assertEqual(response.status_code, 405)
+
+    def test_till_accessible_without_login(self):
+        response = Client().get(reverse('till'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_till_nav_link_on_pos_page(self):
+        response = self.client.get(reverse('pos'))
+        self.assertContains(response, reverse('till'))
+
+    def test_till_nav_link_on_till_page(self):
+        response = self.client.get(reverse('till'))
+        self.assertContains(response, reverse('pos'))
