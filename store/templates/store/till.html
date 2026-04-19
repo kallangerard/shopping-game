@@ -40,16 +40,37 @@
 
   .denom-symbol { font-size: 1.3rem; width: 36px; }
   .denom-label { font-weight: 600; }
-  .denom-value { color: var(--muted); font-size: 0.95rem; }
+
+  .cart-row-qty {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .qty-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--muted);
+    background: transparent;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s;
+    flex-shrink: 0;
+  }
+  .qty-btn:hover { background: #eeeeee; }
 
   .qty-input {
-    width: 80px;
-    padding: 8px 10px;
+    width: 52px;
+    padding: 8px 6px;
     border: 2px solid #d0d0d0;
     border-radius: 8px;
     font-size: 1.1rem;
     font-weight: 600;
-    text-align: right;
+    text-align: center;
     transition: border-color 0.15s;
   }
   .qty-input:focus { outline: none; border-color: var(--green); }
@@ -83,95 +104,83 @@
         <tr>
           <th></th>
           <th>Denomination</th>
-          <th>Value</th>
           <th>Qty</th>
           <th>Subtotal</th>
         </tr>
       </thead>
       <tbody>
-        <tr class="section-header"><td colspan="5">Notes</td></tr>
+        <tr class="section-header"><td colspan="4">Notes</td></tr>
         <tr>
           <td class="denom-symbol">💵</td>
           <td class="denom-label">$100 note</td>
-          <td class="denom-value">$100.00</td>
-          <td><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="10000" oninput="recalculate()"></td>
+          <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="10000" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
           <td class="denom-symbol">💵</td>
           <td class="denom-label">$50 note</td>
-          <td class="denom-value">$50.00</td>
-          <td><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="5000" oninput="recalculate()"></td>
+          <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="5000" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
           <td class="denom-symbol">💵</td>
           <td class="denom-label">$20 note</td>
-          <td class="denom-value">$20.00</td>
-          <td><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="2000" oninput="recalculate()"></td>
+          <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="2000" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
           <td class="denom-symbol">💵</td>
           <td class="denom-label">$10 note</td>
-          <td class="denom-value">$10.00</td>
-          <td><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="1000" oninput="recalculate()"></td>
+          <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="1000" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
           <td class="denom-symbol">💵</td>
           <td class="denom-label">$5 note</td>
-          <td class="denom-value">$5.00</td>
-          <td><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="500" oninput="recalculate()"></td>
+          <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="500" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
-        <tr class="section-header"><td colspan="5">Coins</td></tr>
+        <tr class="section-header"><td colspan="4">Coins</td></tr>
         <tr>
           <td class="denom-symbol">🪙</td>
           <td class="denom-label">$2 coin</td>
-          <td class="denom-value">$2.00</td>
-          <td><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="200" oninput="recalculate()"></td>
+          <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="200" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
           <td class="denom-symbol">🪙</td>
           <td class="denom-label">$1 coin</td>
-          <td class="denom-value">$1.00</td>
-          <td><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="100" oninput="recalculate()"></td>
+          <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="100" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
           <td class="denom-symbol">🪙</td>
           <td class="denom-label">50¢ coin</td>
-          <td class="denom-value">$0.50</td>
-          <td><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="50" oninput="recalculate()"></td>
+          <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="50" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
           <td class="denom-symbol">🪙</td>
           <td class="denom-label">20¢ coin</td>
-          <td class="denom-value">$0.20</td>
-          <td><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="20" oninput="recalculate()"></td>
+          <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="20" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
           <td class="denom-symbol">🪙</td>
           <td class="denom-label">10¢ coin</td>
-          <td class="denom-value">$0.10</td>
-          <td><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="10" oninput="recalculate()"></td>
+          <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="10" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
           <td class="denom-symbol">🪙</td>
           <td class="denom-label">5¢ coin</td>
-          <td class="denom-value">$0.05</td>
-          <td><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="5" oninput="recalculate()"></td>
+          <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="5" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
       </tbody>
       <tfoot>
         <tr class="total-row">
-          <td colspan="4" class="total-label">Total</td>
+          <td colspan="3" class="total-label">Total</td>
           <td class="total-amount" id="grandTotal">$0.00</td>
         </tr>
       </tfoot>
@@ -185,6 +194,12 @@
 
 {% block extra_script %}
 <script>
+  function adjust(btn, delta) {
+    const input = btn.closest('.cart-row-qty').querySelector('.qty-input');
+    input.value = Math.max(0, (parseInt(input.value, 10) || 0) + delta);
+    recalculate();
+  }
+
   function fmt(cents) {
     return '$' + (cents / 100).toFixed(2);
   }
