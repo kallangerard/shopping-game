@@ -1,4 +1,5 @@
 {% extends "store/base.html" %}
+{% load static %}
 {% block title %}Count Till – Supermarket{% endblock %}
 
 {% block extra_style %}
@@ -38,7 +39,8 @@
     padding: 6px 12px;
   }
 
-  .denom-symbol { font-size: 1.3rem; width: 36px; }
+  .denom-symbol { width: 40px; }
+  .denom-symbol img { display: block; width: 40px; height: auto; }
   .denom-label { font-weight: 600; }
 
   .cart-row-qty {
@@ -111,68 +113,68 @@
       <tbody>
         <tr class="section-header"><td colspan="4">Notes</td></tr>
         <tr>
-          <td class="denom-symbol">💵</td>
+          <td class="denom-symbol"><img src="{% static 'store/currency/note_100.svg' %}" alt="$100 note"></td>
           <td class="denom-label">$100 note</td>
           <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="10000" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
-          <td class="denom-symbol">💵</td>
+          <td class="denom-symbol"><img src="{% static 'store/currency/note_50.svg' %}" alt="$50 note"></td>
           <td class="denom-label">$50 note</td>
           <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="5000" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
-          <td class="denom-symbol">💵</td>
+          <td class="denom-symbol"><img src="{% static 'store/currency/note_20.svg' %}" alt="$20 note"></td>
           <td class="denom-label">$20 note</td>
           <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="2000" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
-          <td class="denom-symbol">💵</td>
+          <td class="denom-symbol"><img src="{% static 'store/currency/note_10.svg' %}" alt="$10 note"></td>
           <td class="denom-label">$10 note</td>
           <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="1000" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
-          <td class="denom-symbol">💵</td>
+          <td class="denom-symbol"><img src="{% static 'store/currency/note_5.svg' %}" alt="$5 note"></td>
           <td class="denom-label">$5 note</td>
           <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="500" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr class="section-header"><td colspan="4">Coins</td></tr>
         <tr>
-          <td class="denom-symbol">🪙</td>
+          <td class="denom-symbol"><img src="{% static 'store/currency/coin_200.svg' %}" alt="$2 coin"></td>
           <td class="denom-label">$2 coin</td>
           <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="200" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
-          <td class="denom-symbol">🪙</td>
+          <td class="denom-symbol"><img src="{% static 'store/currency/coin_100.svg' %}" alt="$1 coin"></td>
           <td class="denom-label">$1 coin</td>
           <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="100" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
-          <td class="denom-symbol">🪙</td>
+          <td class="denom-symbol"><img src="{% static 'store/currency/coin_50.svg' %}" alt="50¢ coin"></td>
           <td class="denom-label">50¢ coin</td>
           <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="50" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
-          <td class="denom-symbol">🪙</td>
+          <td class="denom-symbol"><img src="{% static 'store/currency/coin_20.svg' %}" alt="20¢ coin"></td>
           <td class="denom-label">20¢ coin</td>
           <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="20" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
-          <td class="denom-symbol">🪙</td>
+          <td class="denom-symbol"><img src="{% static 'store/currency/coin_10.svg' %}" alt="10¢ coin"></td>
           <td class="denom-label">10¢ coin</td>
           <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="10" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
         </tr>
         <tr>
-          <td class="denom-symbol">🪙</td>
+          <td class="denom-symbol"><img src="{% static 'store/currency/coin_5.svg' %}" alt="5¢ coin"></td>
           <td class="denom-label">5¢ coin</td>
           <td><div class="cart-row-qty"><button type="button" class="qty-btn" onclick="adjust(this,-1)">−</button><input class="qty-input" type="number" min="0" step="1" inputmode="numeric" data-cents="5" oninput="recalculate()"><button type="button" class="qty-btn" onclick="adjust(this,1)">+</button></div></td>
           <td class="row-subtotal">$0.00</td>
