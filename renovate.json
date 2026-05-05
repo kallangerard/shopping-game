@@ -3,7 +3,7 @@
   "packageRules": [
     {
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["ghcr.io/kallangerard/**"],
+      "matchPackageNames": ["ghcr.io/kallangerard/shopping-game/**"],
       "enabled": false
     }
   ]
