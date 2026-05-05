@@ -4,7 +4,6 @@
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["ghcr.io/kallangerard/**"],
-      "matchUpdateTypes": ["digest"],
       "enabled": false
     }
   ]
