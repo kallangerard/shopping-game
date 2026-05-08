@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "A shopping checkout role-playing game for kids"
 requires-python = ">=3.12"
 dependencies = [
-    "django>=6.0.3",
+    "django>=6.0.5",
     "pillow>=12.1.1",
     "gunicorn>=23.0.0",
 ]
@@ -18,7 +18,7 @@ packages = ["shopping_game", "store"]
 
 [dependency-groups]
 dev = [
-    "django>=6.0.3",
+    "django>=6.0.5",
 ]
 
 [tool.uv]
