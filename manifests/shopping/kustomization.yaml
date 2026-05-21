@@ -11,4 +11,4 @@ resources:
 
 images:
   - name: ghcr.io/kallangerard/shopping-game
-    newTag: sha-93991da
+    newTag: sha-3c371ab
